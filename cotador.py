@@ -1,7 +1,10 @@
+import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+import time
+import urllib, urllib.parse
 
 class moedas:
     def __init__(self, url, moeda, txt_coin):
@@ -50,21 +53,44 @@ class moedas:
             self.local_variacao = self.parentes_variacao.find(self.dado_b_variacao_negativo)
             print(self.local_variacao)
         
-    def criador_txt(self):
-        self.dados_txt = open(f'{self.moeda}.txt','w+')
-        self.dados_txt.writelines(f'O {self.moeda} {self.txt_coin} {self.local_cotacao.string}\ntendo uma variacao de {self.local_variacao.string}\nmanito \nnumero do celular')
-        self.dados_txt.close()
-        return print(self.moeda, 'feito')
-    def renomeie(self):
-        m = 1
-        #self.navegador = webdriver.Chrome()
-        # self.navegador.get('https://web.whatsapp.com/')
-        # while len(self.navegador.find_elements_by_id("side")) < 1:
-        #     time.sleep(1)
+    def criador_txt(self, txt_variacao):
+        self.txt_variacao = txt_variacao
+        if txt_variacao in ["tendo uma variacao de "]:
+            self.p = txt_variacao, {self.local_variacao.string}
+            
+        else:
+            self.p = ""
+            
+        self.saida_xl = pd.ExcelWriter(f'{self.moeda}.xlsx')  
         
-        #for i, mensagem in enumerate(self.dados_txt['mensagem']):
-        #pessoa = 
+        self.xlsx_moeda = pd.DataFrame({'Pessoa':["coloque o nome", "coloque o nome"],'Numero':["coloque o numero", "coloque o numero"], 'Mensagem':[f'{self.moeda} {self.txt_coin} {self.local_cotacao.string}', f'{self.moeda} {self.txt_coin} {self.local_cotacao.string}']})
+        self.xlsx_moeda.to_excel(self.saida_xl, self.moeda)
+        # df = pd.DataFrame.from_dict(self.xlsx_moeda, orient='index')
+        # df = df.transpose()
+        self.saida_xl.save()
+        
+        #pip install openpyxl xlsxwriter xlrd
+        return print(self.moeda, 'feito' )
+    
+    def renomeie(self):
+        self.ler_xls = pd.read_excel(f"{self.moeda}.xlsx")
+        
+        self.navegador = webdriver.Chrome()
+        ('https://web.whatsapp.com/')
+        
+        
+        for self.i, self.mensagem in enumerate(self.ler_xls['Mensagem']):
+            self.pessoa = self.ler_xls.loc[self.i, "Pessoa"] 
+            self.numero = self.ler_xls.loc[self.i, "Numero"]
+            self.texto = urllib.parse.quote(f"Olá {self.pessoa}! {self.mensagem}")
+            self.link = f"https://web.whatsapp.com/send?phone={self.numero}&text={self.texto}"
+            
+            self.navegador.get(self.link)
+            
+            while len(self.navegador.find_elements_by_id("side")) < 1:# O navegador vai aguardar o whats até que o elemento "side" seja renderizado após o logon
+                time.sleep(1)
 
+            self.navegador.find_element_by_xpath('//*[@id="main"]/footer/div[1]/div/span[2]/div/div[2]/div[1]/div/div[2]').send_keys(Keys.ENTER)#Será feito a busca do elemento da mesagem e logo após apertará o enter
 
 texto_cotacoes = "esta sendo cotado por:"    
 
@@ -75,8 +101,8 @@ dolar_cotacao.localizador_cotacao("span", "text-2xl")
 dolar_cotacao.localizador_variacao("span","instrument-price_change-percent__19cas ml-2.5 text-negative-main", "span", "instrument-price_change-percent__19cas ml-2.5 text-positive-main"  )
 dolar_cotacao.filtrador(0)
 dolar_cotacao.filtrador_variacao(0)
-dolar_cotacao.criador_txt()
-#dolar_cotacao.renomeie()
+dolar_cotacao.criador_txt("tendo uma variacao de ")
+dolar_cotacao.renomeie()
 
 
 # urlbtc = 'https://www.investing.com/crypto/bitcoin'
