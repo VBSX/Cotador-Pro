@@ -63,7 +63,7 @@ class moedas:
             
         self.saida_xl = pd.ExcelWriter(f'{self.moeda}.xlsx')  
         
-        self.xlsx_moeda = pd.DataFrame({'Pessoa':["coloque o nome", "coloque o nome"],'Numero':["coloque o numero", "coloque o numero"], 'Mensagem':[f'{self.moeda} {self.txt_coin} {self.local_cotacao.string}', f'{self.moeda} {self.txt_coin} {self.local_cotacao.string}']})
+        self.xlsx_moeda = pd.DataFrame({'Pessoa':["makako", "coloque o nome"],'Numero':["coloque o numero", "coloque o numero"], 'Mensagem':[f'{self.moeda} {self.txt_coin} {self.local_cotacao.string}', f'{self.moeda} {self.txt_coin} {self.local_cotacao.string}']})
         self.xlsx_moeda.to_excel(self.saida_xl, self.moeda)
         # df = pd.DataFrame.from_dict(self.xlsx_moeda, orient='index')
         # df = df.transpose()
@@ -92,7 +92,8 @@ class moedas:
 
             self.navegador.find_element_by_xpath('//*[@id="main"]/footer/div[1]/div/span[2]/div/div[2]/div[1]/div/div[2]').send_keys(Keys.ENTER)#Será feito a busca do elemento da mesagem e logo após apertará o enter
 
-texto_cotacoes = "esta sendo cotado por:"    
+            
+texto_cotacoes = "esta sendo cotado por: R$"    
 
 urldolar = 'https://br.investing.com/currencies/usd-brl'
 dolar_cotacao = moedas(urldolar, 'Dolar',texto_cotacoes )
